@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8601: Null 参照代入の可能性があります。
+dotnet_diagnostic.CS8601.severity = none
