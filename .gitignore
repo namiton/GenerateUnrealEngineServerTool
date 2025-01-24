@@ -1,0 +1,21 @@
+# ビルドファイル
+bin/
+obj/
+*.exe
+*.msi
+*.dll
+*.pdb
+
+# NuGetパッケージ
+packages/
+project.lock.json
+*.nuget.props
+
+# Visual Studio関連
+.vs/
+*.user
+*.suo
+
+# デバッグ・ログファイル
+*.log
+*.tlog
