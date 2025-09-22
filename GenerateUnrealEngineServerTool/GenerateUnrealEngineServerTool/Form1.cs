@@ -22,7 +22,7 @@ namespace GenerateUnrealEngineServerTool
         private void InitializeComboBox()
         {
             // ComboBox にバージョンを設定
-            string[] versions = { "UE 4.26", "UE 4.27", "UE 5.0", "UE 5.1", "UE 5.2", "UE 5.3", "UE 5.4", "UE 5.5" };
+            string[] versions = { "UE 4.26", "UE 4.27", "UE 5.0", "UE 5.1", "UE 5.2", "UE 5.3", "UE 5.4", "UE 5.5", "UE 5.6" };
             cmbueversion.Items.AddRange(versions);
             cmbueversion.SelectedIndex = 7;
         }
@@ -259,6 +259,8 @@ namespace GenerateUnrealEngineServerTool
                     return "C:\\Program Files\\Epic Games\\UE_5.4\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
                 case "UE 5.5":
                     return "C:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
+                case "UE 5.6":
+                    return "C:\\Program Files\\Epic Games\\UE_5.6\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
                 default:
                     return null;
             }
