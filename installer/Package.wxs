@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  GenerateUnrealEngineServerTool MSI 定義 (WiX Toolset v6)
+  - Version / PublishDir は wixproj の DefineConstants から渡される
+  - self-contained publish 出力フォルダを丸ごと取り込む
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="GenerateUnrealEngineServerTool"
+    Manufacturer="SingleClickCompany"
+    Version="$(var.Version)"
+    UpgradeCode="A6E3C2F1-4B7D-4E2A-9C1F-8D5B6A7E9C34"
+    Scope="perMachine"
+    Compressed="yes">
+
+    <!-- 旧バージョンを自動アンインストールしてから上書き。ダウングレードは拒否。 -->
+    <MajorUpgrade DowngradeErrorMessage="より新しいバージョンの [ProductName] が既にインストールされています。" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- プログラムと機能 (ARP) に表示するアイコン -->
+    <Icon Id="AppIcon.ico" SourceFile="$(var.PublishDir)\icon\GenerateUnrealEngineServerTool.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+
+    <!-- インストール先: C:\Program Files\GenerateUnrealEngineServerTool -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="GenerateUnrealEngineServerTool" />
+    </StandardDirectory>
+
+    <!-- スタートメニューのショートカット -->
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="AppShortcut" Guid="*">
+        <Shortcut Id="StartMenuShortcut"
+                  Name="GenerateUnrealEngineServerTool"
+                  Target="[INSTALLFOLDER]GenerateUnrealEngineServerTool.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RemoveFolder Id="CleanupShortcut" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\SingleClickCompany\GenerateUnrealEngineServerTool"
+                       Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="GenerateUnrealEngineServerTool" Level="1">
+      <ComponentGroupRef Id="ProductFiles" />
+      <ComponentRef Id="AppShortcut" />
+    </Feature>
+
+    <!-- publish 出力フォルダ配下を一括取り込み (exe + icon\*.ico など) -->
+    <ComponentGroup Id="ProductFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.PublishDir)\**" />
+    </ComponentGroup>
+  </Package>
+</Wix>

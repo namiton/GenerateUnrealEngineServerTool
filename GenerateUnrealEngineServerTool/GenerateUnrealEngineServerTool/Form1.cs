@@ -2,6 +2,7 @@ using Microsoft.VisualBasic.Logging;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Intrinsics.Arm;
 
 namespace GenerateUnrealEngineServerTool
@@ -22,9 +23,10 @@ namespace GenerateUnrealEngineServerTool
         private void InitializeComboBox()
         {
             // ComboBox にバージョンを設定
-            string[] versions = { "UE 4.26", "UE 4.27", "UE 5.0", "UE 5.1", "UE 5.2", "UE 5.3", "UE 5.4", "UE 5.5", "UE 5.6" };
+            string[] versions = { "UE 4.26", "UE 4.27", "UE 5.0", "UE 5.1", "UE 5.2", "UE 5.3", "UE 5.4", "UE 5.5", "UE 5.6", "UE 5.7", "UE 5.8" };
             cmbueversion.Items.AddRange(versions);
-            cmbueversion.SelectedIndex = 7;
+            // 常に最新バージョンを初期選択にする
+            cmbueversion.SelectedIndex = cmbueversion.Items.Count - 1;
         }
 
         private void ResetPaths()
@@ -99,7 +101,7 @@ namespace GenerateUnrealEngineServerTool
             if (!ValidatePaths()) return;
 
             // バッチファイルの設定
-            string batFilePath = Path.Combine(Path.GetDirectoryName(projectPath), $"{Path.GetFileNameWithoutExtension(projectPath)}_RunServer.bat");
+            string batFilePath = Path.Combine(Path.GetDirectoryName(projectPath)!, $"{Path.GetFileNameWithoutExtension(projectPath)}_RunServer.bat");
             string batContent = GenerateBatContent(uePath, projectPath);
 
             // バッチファイルがすでに存在する場合の処理
@@ -123,6 +125,7 @@ namespace GenerateUnrealEngineServerTool
             }
 
         }
+        [MemberNotNullWhen(true, nameof(uePath), nameof(projectPath))]
         private bool ValidatePaths()
         {
             if (string.IsNullOrWhiteSpace(uePath) || string.IsNullOrWhiteSpace(projectPath))
@@ -165,16 +168,16 @@ namespace GenerateUnrealEngineServerTool
         }
         private void OpenContainingFolder(string filePath)
         {
-            Process.Start("explorer.exe", Path.GetDirectoryName(filePath));
+            Process.Start("explorer.exe", Path.GetDirectoryName(filePath)!);
         }
 
         private void textBox1_DragDrop(object sender, DragEventArgs e)
         {
             // ファイルが渡されていなければ、何もしない
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            if (e.Data is null || !e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             // 渡されたファイルに対して処理を行う
-            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop))
+            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop)!)
             {
                 ueEditorPathBox.Text = LoadfilePath;
             }
@@ -188,10 +191,10 @@ namespace GenerateUnrealEngineServerTool
         private void uePathBox_DragDrop(object sender, DragEventArgs e)
         {
             // ファイルが渡されていなければ、何もしない
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            if (e.Data is null || !e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             // 渡されたファイルに対して処理を行う
-            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop))
+            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop)!)
             {
                 ueEditorPathBox.Text = LoadfilePath;
             }
@@ -205,10 +208,10 @@ namespace GenerateUnrealEngineServerTool
         private void textBox3_DragDrop(object sender, DragEventArgs e)
         {
             // ファイルが渡されていなければ、何もしない
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            if (e.Data is null || !e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             // 渡されたファイルに対して処理を行う
-            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop))
+            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop)!)
             {
                 uePath = LoadfilePath;
                 ueEditorPathBox.Text = uePath;
@@ -223,10 +226,10 @@ namespace GenerateUnrealEngineServerTool
         private void projectPathBox_DragDrop(object sender, DragEventArgs e)
         {
             // ファイルが渡されていなければ、何もしない
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            if (e.Data is null || !e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             // 渡されたファイルに対して処理を行う
-            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop))
+            foreach (var LoadfilePath in (string[])e.Data.GetData(DataFormats.FileDrop)!)
             {
                 projectPath = LoadfilePath;
                 projectPathBox.Text = projectPath;
@@ -261,6 +264,10 @@ namespace GenerateUnrealEngineServerTool
                     return "C:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
                 case "UE 5.6":
                     return "C:\\Program Files\\Epic Games\\UE_5.6\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
+                case "UE 5.7":
+                    return "C:\\Program Files\\Epic Games\\UE_5.7\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
+                case "UE 5.8":
+                    return "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe";
                 default:
                     return null;
             }

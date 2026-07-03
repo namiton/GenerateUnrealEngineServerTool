@@ -16,8 +16,23 @@ With this application, you can specify the Unreal Editor path and project file t
 
 ## Installation
 
-同封の.msiインストーラーを実行してください。
-Run the included .msi installer.
+[GitHub Releases](../../releases) から最新の `.msi` インストーラーをダウンロードして実行してください。
+.NET ランタイムは同梱されているため、別途インストールは不要です（インストール先: `C:\Program Files`、管理者権限が必要）。
+
+Download the latest `.msi` installer from [GitHub Releases](../../releases) and run it.
+The .NET runtime is bundled, so no separate installation is required (installs to `C:\Program Files`; administrator privileges required).
+
+## Release (for maintainers)
+
+`v*` 形式のタグを push すると、GitHub Actions が self-contained な `.msi` を自動生成し Release に添付します。
+Pushing a `v*` tag triggers GitHub Actions to build the self-contained `.msi` and attach it to a Release.
+
+```bash
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+ワークフロー: [.github/workflows/release.yml](.github/workflows/release.yml) / インストーラー定義: [installer/](installer/)
 
 ## Usage
 

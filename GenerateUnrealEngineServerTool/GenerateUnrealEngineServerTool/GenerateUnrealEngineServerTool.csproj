@@ -5,8 +5,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <BaseOutputPath>D:\OriginalTool\GenerateUnrealEngineServerTool\Pack</BaseOutputPath>
     <ApplicationIcon>icon\GenerateUnrealEngineServerTool.ico</ApplicationIcon>
+    <!-- CI ではタグから採番して -p:Version= で上書きする。ローカルビルドの既定値。 -->
+    <Version>0.0.0</Version>
+    <Company>SingleClickCompany</Company>
+    <Product>GenerateUnrealEngineServerTool</Product>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="icon\GenerateUnrealEngineServerTool.ico">
