@@ -1,0 +1,58 @@
+name: Release
+
+# v で始まるタグ (例: v1.2.0) を push したときに MSI を生成して Release に添付する
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Derive version from tag
+        id: ver
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $ver = $tag.TrimStart('v')
+          # MSI ProductVersion 用に数値部分のみ (例 1.2.0-test -> 1.2.0)
+          $num = ($ver -split '-')[0]
+          "version=$num" >> $env:GITHUB_OUTPUT
+          "tag=$tag"     >> $env:GITHUB_OUTPUT
+
+      - name: Publish app (self-contained single-file)
+        shell: pwsh
+        run: >
+          dotnet publish GenerateUnrealEngineServerTool/GenerateUnrealEngineServerTool/GenerateUnrealEngineServerTool.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:DebugType=none
+          -p:Version=${{ steps.ver.outputs.version }}
+          -o publish
+
+      - name: Build MSI (WiX)
+        shell: pwsh
+        run: >
+          dotnet build installer/GenerateUnrealEngineServerTool.Installer.wixproj
+          -c Release
+          -p:Version=${{ steps.ver.outputs.version }}
+          -p:AppPublishDir=${{ github.workspace }}\publish
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          generate_release_notes: true
+          files: installer/**/*.msi

@@ -1,0 +1,16 @@
+<Project Sdk="WixToolset.Sdk/6.0.0">
+  <PropertyGroup>
+    <!-- 出力 MSI 名: GenerateUnrealEngineServerTool-<version>.msi -->
+    <OutputName>GenerateUnrealEngineServerTool-$(Version)</OutputName>
+
+    <!-- 64bit パッケージ (ProgramFiles64Folder へインストールするため) -->
+    <InstallerPlatform>x64</InstallerPlatform>
+
+    <!-- CI からは -p:Version= / -p:AppPublishDir= で上書きされる。以下はローカル既定値。 -->
+    <Version Condition="'$(Version)' == ''">0.0.0</Version>
+    <AppPublishDir Condition="'$(AppPublishDir)' == ''">$(MSBuildThisFileDirectory)..\publish</AppPublishDir>
+
+    <!-- Package.wxs へ渡す WiX プリプロセッサ変数 -->
+    <DefineConstants>Version=$(Version);PublishDir=$(AppPublishDir)</DefineConstants>
+  </PropertyGroup>
+</Project>

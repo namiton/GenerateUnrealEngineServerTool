@@ -6,6 +6,9 @@ obj/
 *.dll
 *.pdb
 
+# publish 出力 (CI で生成)
+publish/
+
 # NuGetパッケージ
 packages/
 project.lock.json
